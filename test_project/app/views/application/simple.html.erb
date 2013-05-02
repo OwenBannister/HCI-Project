@@ -1,0 +1,94 @@
+<html>
+<head>
+
+	<%= javascript_include_tag "d3.v3.min.js" %>
+	<%= javascript_include_tag "jquery.min.js" %>
+</head>
+<body>
+	<div class="row">
+		<div id="test" class="span4 ">
+		</div>
+		<div class="span4">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Mass [MJup]</th>
+					</tr>
+				</thead>
+				<tbody id="tablebody">
+				</tbody>
+			</table>
+		</div >
+	</div>
+	<script type="text/javascript">
+	d3.xml("systems.xml", "application/xml", function(xmldata) {
+		var planets = $("planet",xmldata);
+		
+		var colour = 0;
+		var wait = 0;
+		var radius = 7;
+
+		var tr = d3.select("#tablebody").selectAll("tr").data(planets)
+			.enter()
+			.append("tr");
+		
+		tr.append("td")
+			.text(function(planet) {
+				return $("name:first",$(planet)).text(); 
+			});
+		
+		tr.append("td")
+			.text(function(planet) { 
+				return $("mass",$(planet)).text(); 
+			});
+			
+		var svg = d3.select("#test").append("svg");
+		
+
+		var w = 1920;
+		var h = 20000;
+		var count = 10;
+		svg.attr("width", "100%")
+		.attr("height", h);
+
+
+		var circles = svg.selectAll("circle")
+		.data(planets)
+		.enter()
+		.append("circle")
+		.text(function(planet){ return $("name:first",$(planet)).text(); });
+
+		circles.attr("cy", function(d, i) {
+			count +=20
+			return 10+count;
+		})
+		
+		.attr("cx", w/2)
+		.attr("r", 10)
+		.attr("fill", function() {
+			return "rgba(" + parseInt(Math.random()*255) + "," + parseInt(Math.random()*255) + "," + parseInt(Math.random()*255) + "," + (Math.random()) + ")"; 
+		})
+		.attr("stroke", "orange")
+		.attr("stroke-width", function(d) {
+			return d/2;
+		})
+		.on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+        .on("mouseout", function(){d3.select(this).style("fill", "yellow");})
+
+		.transition()
+			.attr('r', function() {
+				return radius += 3;
+			})
+			.attr("fill", function() {
+			return "rgba(" + parseInt(Math.random()*255) + "," + parseInt(Math.random()*255) + "," + parseInt(Math.random()*255) + "," + (Math.random()) + ")"; 
+		})
+			.duration(1000)
+			.delay(function() {
+				return wait += 100;
+			});
+
+	});
+	</script>
+</body>
+</html>
