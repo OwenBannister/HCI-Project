@@ -3,6 +3,7 @@ TestProject::Application.routes.draw do
   # first created -> highest priority.
 match '/simple' => 'application#simple'
 match '/ui' => 'application#ui'
+root :to => 'application#ui'
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
