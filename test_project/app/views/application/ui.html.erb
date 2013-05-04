@@ -39,6 +39,12 @@ div.inline { float:left; }
 		<!-- Sliders  -->
 		<h2>Select ranges for the data</h2>
 		<p style="height:10px">
+			<label for="model_yearamount">Year range:</label>
+			<input type="text" id="model_yearamount" style="border: 0; color: #f6931f; font-weight: bold;" />
+		</p>
+		<div id="model_yearslider-range" style="width:500px"></div>
+
+		<p style="height:10px">
 			<label for="mpgamount">Mpg range:</label>
 			<input type="text" id="mpgamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		</p>
@@ -160,7 +166,7 @@ div.inline { float:left; }
 	function update()
 	{
 		d3.selectAll("circle").
-		filter(function(d) {return (parseInt(d.cylinders) <= parseInt(cylinder_max) && parseInt(d.cylinders) >= parseInt(cylinder_min))&& (parseInt(d.horsepower) <= parseInt(horsepower_max) && parseInt(d.horsepower) >= parseInt(horsepower_min))&& (parseInt(d.mpg) <= parseInt(mpg_max) && parseInt(d.mpg) >= parseInt(mpg_min)) && (parseInt(d.displacement) <= parseInt(displacement_max) && parseInt(d.displacement) >= parseInt(displacement_min)) && (parseInt(d.weight) <= parseInt(weight_max) && parseInt(d.weight) >= parseInt(weight_min))&& (parseInt(d.acceleration) <= parseInt(acceleration_max) && parseInt(d.acceleration) >= parseInt(acceleration_min));})
+		filter(function(d) {return (parseInt(d.cylinders) <= parseInt(cylinder_max) && parseInt(d.cylinders) >= parseInt(cylinder_min))&& (parseInt(d.horsepower) <= parseInt(horsepower_max) && parseInt(d.horsepower) >= parseInt(horsepower_min))&& (parseInt(d.mpg) <= parseInt(mpg_max) && parseInt(d.mpg) >= parseInt(mpg_min)) && (parseInt(d.displacement) <= parseInt(displacement_max) && parseInt(d.displacement) >= parseInt(displacement_min)) && (parseInt(d.weight) <= parseInt(weight_max) && parseInt(d.weight) >= parseInt(weight_min))&& (parseInt(d.acceleration) <= parseInt(acceleration_max) && parseInt(d.acceleration) >= parseInt(acceleration_min))&& (parseInt(d.model_year) <= parseInt(model_year_max) && parseInt(d.model_year) >= parseInt(model_year_min));})
 		.transition()
 		.attr("cx", function(d,i) {
 			if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
@@ -177,7 +183,7 @@ div.inline { float:left; }
 
 
 		d3.selectAll("circle").filter(function(d) {
-			return ((parseInt(d.cylinders) > parseInt(cylinder_max)) || (parseInt(d.cylinders) < parseInt(cylinder_min)))||((parseInt(d.horsepower) > parseInt(horsepower_max)) ||(parseInt(d.horsepower) < parseInt(horsepower_min)))||((parseInt(d.mpg) > parseInt(mpg_max)) ||(parseInt(d.mpg) < parseInt(mpg_min)))||((parseInt(d.displacement) > parseInt(displacement_max)) ||(parseInt(d.displacement) < parseInt(displacement_min)))||((parseInt(d.weight) > parseInt(weight_max)) ||(parseInt(d.weight) < parseInt(weight_min)))||((parseInt(d.acceleration) > parseInt(acceleration_max)) ||(parseInt(d.acceleration) < parseInt(acceleration_min)));})
+			return ((parseInt(d.cylinders) > parseInt(cylinder_max)) || (parseInt(d.cylinders) < parseInt(cylinder_min)))||((parseInt(d.horsepower) > parseInt(horsepower_max)) ||(parseInt(d.horsepower) < parseInt(horsepower_min)))||((parseInt(d.mpg) > parseInt(mpg_max)) ||(parseInt(d.mpg) < parseInt(mpg_min)))||((parseInt(d.displacement) > parseInt(displacement_max)) ||(parseInt(d.displacement) < parseInt(displacement_min)))||((parseInt(d.weight) > parseInt(weight_max)) ||(parseInt(d.weight) < parseInt(weight_min)))||((parseInt(d.acceleration) > parseInt(acceleration_max)) ||(parseInt(d.acceleration) < parseInt(acceleration_min)))||((parseInt(d.model_year) > parseInt(model_year_max)) ||(parseInt(d.model_year) < parseInt(model_year_min)));})
 		.transition()
 		.attr("opacity", 0)
 		.transition()
@@ -403,6 +409,25 @@ if (selectedBox != null)	{killBox(d,i)}
 
 
 	$(function() {
+
+		$( "#model_yearslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.model_year); }),
+			max: d3.max(cars, function(d) { return parseInt(d.model_year); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.model_year); }), d3.max(cars, function(d) { return parseInt(d.model_year); }) ],
+			slide: function( event, ui ) {
+				$( "#model_yearamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				model_year_min = parseInt(ui.values[0]);
+				model_year_max = parseInt(ui.values[1]);
+			}
+		});
+				$( "#model_yearslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#model_yearamount" ).val( "" + $( "#model_yearslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#model_yearslider-range" ).slider( "values", 1 ) );
+
 		$( "#cylinderslider-range" ).slider({
 			range: true,
 			min: d3.min(cars, function(d) { return parseInt(d.cylinders); }),
