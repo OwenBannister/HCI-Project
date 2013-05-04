@@ -74,10 +74,10 @@ div.inline { float:left; }
 			<input type="text" id="accelerationamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		</p>
 		<div id="accelerationslider-range" style="width:500px"></div>
-		<br />
-		<button onclick="update()">Update Visualisation</button>
+	
+		<!-- <button onclick="update()">Update Visualisation</button> -->
 
-		<br /><br /><br />
+	
 		<h2>Select attributes for axis</h2>
 		<form>
 			X
@@ -145,21 +145,43 @@ div.inline { float:left; }
 	var yAxis;
 	var actualXAxis;
 	var actualYAxis;
-
+	var selectedBox;
+	var selectedName
+	var selectedYear
+	var selectedMPG
+	var selectedCylinders
+	var selectedHorsepower
+	var selectedDisplacement
+	var selectedWeight
+	var selectedAcceleration
+	var close;
+	var closeRect;
+	
 	function update()
 	{
 		d3.selectAll("circle").
 		filter(function(d) {return (parseInt(d.cylinders) <= parseInt(cylinder_max) && parseInt(d.cylinders) >= parseInt(cylinder_min))&& (parseInt(d.horsepower) <= parseInt(horsepower_max) && parseInt(d.horsepower) >= parseInt(horsepower_min))&& (parseInt(d.mpg) <= parseInt(mpg_max) && parseInt(d.mpg) >= parseInt(mpg_min)) && (parseInt(d.displacement) <= parseInt(displacement_max) && parseInt(d.displacement) >= parseInt(displacement_min)) && (parseInt(d.weight) <= parseInt(weight_max) && parseInt(d.weight) >= parseInt(weight_min))&& (parseInt(d.acceleration) <= parseInt(acceleration_max) && parseInt(d.acceleration) >= parseInt(acceleration_min));})
 		.transition()
+		.attr("cx", function(d,i) {
+			if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
+			else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
+			else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
+			else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
+			else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
+			else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+		})
+		.transition()		
 		.duration(1000)
 		.attr("opacity", 1);
+
 
 
 		d3.selectAll("circle").filter(function(d) {
 			return ((parseInt(d.cylinders) > parseInt(cylinder_max)) || (parseInt(d.cylinders) < parseInt(cylinder_min)))||((parseInt(d.horsepower) > parseInt(horsepower_max)) ||(parseInt(d.horsepower) < parseInt(horsepower_min)))||((parseInt(d.mpg) > parseInt(mpg_max)) ||(parseInt(d.mpg) < parseInt(mpg_min)))||((parseInt(d.displacement) > parseInt(displacement_max)) ||(parseInt(d.displacement) < parseInt(displacement_min)))||((parseInt(d.weight) > parseInt(weight_max)) ||(parseInt(d.weight) < parseInt(weight_min)))||((parseInt(d.acceleration) > parseInt(acceleration_max)) ||(parseInt(d.acceleration) < parseInt(acceleration_min)));})
 		.transition()
-		.duration(1000)
-		.attr("opacity", 0);
+		.attr("opacity", 0)
+		.transition()
+		.attr("cx", 1000);
 	}
 
 	function xDrop()
@@ -266,92 +288,229 @@ function yDrop()
 ///////////////////////////////////////////////////////////
 
 
+function getX(d,i) {
+	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
+	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
+	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
+	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
+	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
+	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+}
+function getY(d,i) {
+	if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
+	else if (yLabel==("cylinder")){return yScale(parseInt(d.cylinders));}
+	else if (yLabel==("mpg")){return yScale(parseInt(d.mpg));}
+	else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
+	else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
+	else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
+}
 
-$(function() {
-	$( "#cylinderslider-range" ).slider({
-		range: true,
-		min: d3.min(cars, function(d) { return parseInt(d.cylinders); }),
-		max: d3.max(cars, function(d) { return parseInt(d.cylinders); }),
-		values: [ d3.min(cars, function(d) { return parseInt(d.cylinders); }), d3.max(cars, function(d) { return parseInt(d.cylinders); }) ],
-		slide: function( event, ui ) {
-			$( "#cylinderamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-			cylinder_min = parseInt(ui.values[0]);
-			cylinder_max = parseInt(ui.values[1]);
-		}
-	});
-	$( "#cylinderamount" ).val( "" + $( "#cylinderslider-range" ).slider( "values", 0 ) +
-		" - " + $( "#cylinderslider-range" ).slider( "values", 1 ) );
+function killBox(d,i){	 
+	selectedBox.remove();
+	 selectedName.remove();
+	 selectedYear.remove();
+	 selectedMPG.remove();
+	 selectedCylinders.remove();
+	 selectedHorsepower.remove();
+	 selectedDisplacement.remove();
+	 selectedWeight.remove();
+	 selectedAcceleration.remove();
+	 close.remove();
+	 closeRect.remove();
+	}
+function popBox(d,i){
+if (selectedBox != null)	{killBox(d,i)}
+	var selectedTextBoxX = getX(d,i);
+	var selectedTextBoxY = getY(d,i);
+	 selectedBox = svg.append("rect")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY)
+	.attr("height", 140)
+	.attr("width", 250)
+	.style("fill", "white")
+	.attr("stroke", "black")
+	.attr("stroke-width", function(d) {
+		return 1;
 
-	$( "#horsepowerslider-range" ).slider({
-		range: true,
-		min: d3.min(cars, function(d) { return parseInt(d.horsepower); }),
-		max: d3.max(cars, function(d) { return parseInt(d.horsepower); }),
-		values: [ d3.min(cars, function(d) { return parseInt(d.horsepower); }), d3.max(cars, function(d) { return parseInt(d.horsepower); }) ],
-		slide: function( event, ui ) {
-			$( "#horsepoweramount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-			horsepower_min = parseInt(ui.values[ 0 ]);
-			horsepower_max = parseInt(ui.values[ 1 ]);
-		}
+	})
+	.on("click", function(d, i){
+		killBox(d,i);
 	});
-	$( "#horsepoweramount" ).val( "" + $( "#horsepowerslider-range" ).slider( "values", 0 ) +
-		" - " + $( "#horsepowerslider-range" ).slider( "values", 1 ) );
 
-	$( "#mpgslider-range" ).slider({
-		range: true,
-		min: d3.min(cars, function(d) { return parseInt(d.mpg); }),
-		max: d3.max(cars, function(d) { return parseInt(d.mpg); }),
-		values: [ d3.min(cars, function(d) { return parseInt(d.mpg); }), d3.max(cars, function(d) { return parseInt(d.mpg); }) ],
-		slide: function( event, ui ) {
-			$( "#mpgamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-			mpg_min = parseInt(ui.values[ 0 ]);
-			mpg_max = parseInt(ui.values[ 1 ]);
-		}
+	closeRect = svg.append("rect")
+	.attr("x", selectedTextBoxX+230)
+	.attr("y", selectedTextBoxY)
+	.attr("height", 20)
+	.attr("width", 20)
+	.style("fill", "white")
+	.attr("stroke", "black")
+	.attr("stroke-width", function(d) {
+		return 1;
+	}).on("click", function(d, i){
+		killBox(d,i);
 	});
-	$( "#mpgamount" ).val( "" + $( "#mpgslider-range" ).slider( "values", 0 ) +
-		" - " + $( "#mpgslider-range" ).slider( "values", 1 ) );
 
-	$( "#displacementslider-range" ).slider({
-		range: true,
-		min: d3.min(cars, function(d) { return parseInt(d.displacement); }),
-		max: d3.max(cars, function(d) { return parseInt(d.displacement); }),
-		values: [ d3.min(cars, function(d) { return parseInt(d.displacement); }), d3.max(cars, function(d) { return parseInt(d.displacement); }) ],
-		slide: function( event, ui ) {
-			$( "#displacementamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-			displacement_min = parseInt(ui.values[ 0 ]);
-			displacement_max = parseInt(ui.values[ 1 ]);
-		}
-	});
-	$( "#displacementamount" ).val( "" + $( "#displacementslider-range" ).slider( "values", 0 ) +
-		" - " + $( "#displacementslider-range" ).slider( "values", 1 ) );	
 
-	$( "#weightslider-range" ).slider({
-		range: true,
-		min: d3.min(cars, function(d) { return parseInt(d.weight); }),
-		max: d3.max(cars, function(d) { return parseInt(d.weight); }),
-		values: [ d3.min(cars, function(d) { return parseInt(d.weight); }), d3.max(cars, function(d) { return parseInt(d.weight); }) ],
-		slide: function( event, ui ) {
-			$( "#weightamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-			weight_min = parseInt(ui.values[ 0 ]);
-			weight_max = parseInt(ui.values[ 1 ]);
-		}
+	close = svg.append("text")
+	.attr("x", selectedTextBoxX+235)
+	.attr("y", selectedTextBoxY+15)
+	.text("X").on("click", function(d, i){
+		killBox(d,i);
 	});
-	$( "#weightamount" ).val( "" + $( "#weightslider-range" ).slider( "values", 0 ) +
-		" - " + $( "#weightslider-range" ).slider( "values", 1 ) );	
 
-	$( "#accelerationslider-range" ).slider({
-		range: true,
-		min: d3.min(cars, function(d) { return parseInt(d.acceleration); }),
-		max: d3.max(cars, function(d) { return parseInt(d.acceleration); }),
-		values: [ d3.min(cars, function(d) { return parseInt(d.acceleration); }), d3.max(cars, function(d) { return parseInt(d.acceleration); }) ],
-		slide: function( event, ui ) {
-			$( "#accelerationamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-			acceleration_min = parseInt(ui.values[ 0 ]);
-			acceleration_max = parseInt(ui.values[ 1 ]);
-		}
+	selectedName = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+15)
+	.text("Name: "+d.car_name);
+
+	selectedYear = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+30)
+	.text("Year: "+d.model_year);
+
+	selectedMPG = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+45)
+	.text("MPG: "+d.mpg);
+
+	selectedCylinders = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+60)
+	.text("Horsepower: "+d.horsepower);
+
+	selectedHorsepower = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+75)
+	.text("Cylinders: "+d.cylinders);
+
+	selectedAcceleration = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+90)
+	.text("Acceleration (0-100kph): "+d.acceleration);
+
+	selectedDisplacement = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+105)
+	.text("Displacement (ml): "+d.displacement);
+
+	selectedWeight = svg.append("text")
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+120)
+	.text("Weight (kg): "+d.weight);}
+
+
+
+
+
+	$(function() {
+		$( "#cylinderslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.cylinders); }),
+			max: d3.max(cars, function(d) { return parseInt(d.cylinders); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.cylinders); }), d3.max(cars, function(d) { return parseInt(d.cylinders); }) ],
+			slide: function( event, ui ) {
+				$( "#cylinderamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				cylinder_min = parseInt(ui.values[0]);
+				cylinder_max = parseInt(ui.values[1]);
+			}
+		});
+				$( "#cylinderslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#cylinderamount" ).val( "" + $( "#cylinderslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#cylinderslider-range" ).slider( "values", 1 ) );
+
+		$( "#horsepowerslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.horsepower); }),
+			max: d3.max(cars, function(d) { return parseInt(d.horsepower); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.horsepower); }), d3.max(cars, function(d) { return parseInt(d.horsepower); }) ],
+			slide: function( event, ui ) {
+				$( "#horsepoweramount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				horsepower_min = parseInt(ui.values[ 0 ]);
+				horsepower_max = parseInt(ui.values[ 1 ]);
+			}
+		});
+				$( "#horsepowerslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#horsepoweramount" ).val( "" + $( "#horsepowerslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#horsepowerslider-range" ).slider( "values", 1 ) );
+
+		$( "#mpgslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.mpg); }),
+			max: d3.max(cars, function(d) { return parseInt(d.mpg); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.mpg); }), d3.max(cars, function(d) { return parseInt(d.mpg); }) ],
+			slide: function( event, ui ) {
+				$( "#mpgamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				mpg_min = parseInt(ui.values[ 0 ]);
+				mpg_max = parseInt(ui.values[ 1 ]);
+			}
+		});
+				$( "#mpgslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#mpgamount" ).val( "" + $( "#mpgslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#mpgslider-range" ).slider( "values", 1 ) );
+
+		$( "#displacementslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.displacement); }),
+			max: d3.max(cars, function(d) { return parseInt(d.displacement); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.displacement); }), d3.max(cars, function(d) { return parseInt(d.displacement); }) ],
+			slide: function( event, ui ) {
+				$( "#displacementamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				displacement_min = parseInt(ui.values[ 0 ]);
+				displacement_max = parseInt(ui.values[ 1 ]);
+			}
+		});
+				$( "#displacementslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#displacementamount" ).val( "" + $( "#displacementslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#displacementslider-range" ).slider( "values", 1 ) );	
+
+		$( "#weightslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.weight); }),
+			max: d3.max(cars, function(d) { return parseInt(d.weight); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.weight); }), d3.max(cars, function(d) { return parseInt(d.weight); }) ],
+			slide: function( event, ui ) {
+				$( "#weightamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				weight_min = parseInt(ui.values[ 0 ]);
+				weight_max = parseInt(ui.values[ 1 ]);
+			}
+		});
+		$( "#weightslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#weightamount" ).val( "" + $( "#weightslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#weightslider-range" ).slider( "values", 1 ) );	
+
+		$( "#accelerationslider-range" ).slider({
+			range: true,
+			min: d3.min(cars, function(d) { return parseInt(d.acceleration); }),
+			max: d3.max(cars, function(d) { return parseInt(d.acceleration); }),
+			values: [ d3.min(cars, function(d) { return parseInt(d.acceleration); }), d3.max(cars, function(d) { return parseInt(d.acceleration); }) ],
+			slide: function( event, ui ) {
+				$( "#accelerationamount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+				acceleration_min = parseInt(ui.values[ 0 ]);
+				acceleration_max = parseInt(ui.values[ 1 ]);
+			}
+		});
+				$( "#accelerationslider-range" ).slider({
+  		change: function( event, ui ) {update();}
+		});
+
+		$( "#accelerationamount" ).val( "" + $( "#accelerationslider-range" ).slider( "values", 0 ) +
+			" - " + $( "#accelerationslider-range" ).slider( "values", 1 ) );
 	});
-	$( "#accelerationamount" ).val( "" + $( "#accelerationslider-range" ).slider( "values", 0 ) +
-		" - " + $( "#accelerationslider-range" ).slider( "values", 1 ) );
-});
 /////////////////////////////////////////////////////////////
 // Helpers
 /////////////////////////////////////////////////////////////
@@ -382,21 +541,10 @@ var circles = svg.selectAll("circle")
 .enter()
 .append("circle")
 .attr("cx", function(d,i) {
-	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
-	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
-	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
-	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
-	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
-	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+	return getX(d,i);
 })
 .attr("cy", function(d,i) {
-	console.log(yLabel)
-	if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
-	else if (yLabel==("cylinder")){return yScale(parseInt(d.cylinders));}
-	else if (yLabel==("mpg")){return yScale(parseInt(d.mpg));}
-	else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
-	else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
-	else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
+	return getY(d,i)
 })
 
 .attr("r", function(d, i) {
@@ -415,33 +563,14 @@ var circles = svg.selectAll("circle")
 .saveColor()
 			//this.__data__
 			.on("mouseover", function(){
-				d3.select(this).style("fill", "red");
+				//d3.select(this).style("fill", "red");
 			})
 			.on("mouseout", function(){
-				d3.select(this).style("fill", d3.select(this).data.color)
+	
 			})
 			.on("click", function(d, i){
-				var selected = d3.select("text#"+this.__data__.car_name.replace(/ /g, "_")+this.__data__.displacement+this.__data__.model_year)
-				.style("fill", "blue")
-				.moveToFront()
-				.backupXY()
-				.transition()
-				.attr("x", function(d,i) {
-					if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
-					else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
-					else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
-					else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
-					else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
-					else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
-				})
-				.attr("y", function(d,i) {
-					if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
-					else if (yLabel==("cylinder")){return yScale(parseInt(d.cylinders));}
-					else if (yLabel==("mpg")){return yScale(parseInt(d.mpg));}
-					else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
-					else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
-					else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
-				})
+				popBox(d,i);
+
 			});
 
 
@@ -482,53 +611,9 @@ var text = svg.selectAll("text")
 	return h+100+(count+=15);
 })
 .on("click", function(d, i){
-	var selected = d3.select("circle#"+this.__data__.car_name.replace(/ /g, "_")+this.__data__.displacement+this.__data__.model_year)
-
-	.transition()
-	.style("fill", "red");
-	var text = d3.select(this)
-	.style("fill", "blue")
-	
-	.backupXY()
-	.transition()
-	.attr("x", function(d,i) {
-		if (xLabel===("horsepower")){return xScale(parseInt(this.__data__.horsepower));}
-		else if (xLabel===("cylinder")){return xScale(parseInt(this.__data__.cylinders));}
-		else if (xLabel===("mpg")){return xScale(parseInt(this.__data__.mpg));}
-		else if (xLabel===("displacement")){return xScale(parseInt(this.__data__.displacement));}
-		else if (xLabel===("weight")){return xScale(parseInt(this.__data__.weight));}
-		else if (xLabel===("acceleration")){return xScale(parseInt(this.__data__.acceleration));}
-	})
-	.attr("y", function(d,i) {
-		if (yLabel==("horsepower")){return yScale(parseInt(this.__data__.horsepower));}
-		else if (yLabel==("cylinder")){return yScale(parseInt(this.__data__.cylinders));}
-		else if (yLabel==("mpg")){return yScale(parseInt(this.__data__.mpg));}
-		else if (yLabel==("displacement")){return yScale(parseInt(this.__data__.displacement));}
-		else if (yLabel==("weight")){return yScale(parseInt(this.__data__.weight));}
-		else if (yLabel==("acceleration")){return yScale(parseInt(this.__data__.acceleration));}
-	})
-	var rect = svg.append("rect")
-	.attr("x", 30)
-	.attr("y", 30)
-	.attr("height", 30)
-	.style("fill", "black")
-	.attr("width", 20);
+	popBox(d,i)
 })
-.on("dblclick", function(d, i){
-	var selected = d3.select("circle#"+this.__data__.car_name.replace(/ /g, "_")+this.__data__.displacement+this.__data__.model_year)
-	.style("fill", d3.select(this).data.color);
-	var text = d3.select(this)
 
-	.transition()
-	.attr("x", function(d,i) {
-		console.log(this.__data__.oldX+">> "+this.__data__.oldY);
-		return  this.__data__.oldX;
-	})
-	.attr("y", function(d,i) {
-		return this.__data__.oldY;
-	})
-
-});
 
 yLabelText = svg.append("text")
 .attr("x", 10)
