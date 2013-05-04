@@ -137,6 +137,9 @@ div.inline { float:left; }
 	var acceleration_max = 24;
 	var weight_min = 1613;
 	var weight_max = 5140;
+
+	var model_year_max = 82;
+	var model_year_min = 70;
 	var svg;
 	var xScale = d3.scale.linear()
 	.domain([0, 1+(d3.max(cars, function(d) { return parseInt(d.mpg); }))])
@@ -151,6 +154,7 @@ div.inline { float:left; }
 	var yAxis;
 	var actualXAxis;
 	var actualYAxis;
+	var selected;
 	var selectedBox;
 	var selectedName
 	var selectedYear
@@ -162,9 +166,12 @@ div.inline { float:left; }
 	var selectedAcceleration
 	var close;
 	var closeRect;
-	
+	var selectedTextBoxX;
+	var selectedTextBoxY;
+
 	function update()
 	{
+
 		d3.selectAll("circle").
 		filter(function(d) {return (parseInt(d.cylinders) <= parseInt(cylinder_max) && parseInt(d.cylinders) >= parseInt(cylinder_min))&& (parseInt(d.horsepower) <= parseInt(horsepower_max) && parseInt(d.horsepower) >= parseInt(horsepower_min))&& (parseInt(d.mpg) <= parseInt(mpg_max) && parseInt(d.mpg) >= parseInt(mpg_min)) && (parseInt(d.displacement) <= parseInt(displacement_max) && parseInt(d.displacement) >= parseInt(displacement_min)) && (parseInt(d.weight) <= parseInt(weight_max) && parseInt(d.weight) >= parseInt(weight_min))&& (parseInt(d.acceleration) <= parseInt(acceleration_max) && parseInt(d.acceleration) >= parseInt(acceleration_min))&& (parseInt(d.model_year) <= parseInt(model_year_max) && parseInt(d.model_year) >= parseInt(model_year_min));})
 		.transition()
@@ -187,8 +194,84 @@ div.inline { float:left; }
 		.transition()
 		.attr("opacity", 0)
 		.transition()
-		.attr("cx", 1000);
+		.duration(1000)
+		.attr("cx", 3000);
+
 	}
+	function getX(d,i) {
+	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
+	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
+	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
+	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
+	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
+	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+}
+function getY(d,i) {
+	if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
+	else if (yLabel==("cylinder")){return yScale(parseInt(d.cylinders));}
+	else if (yLabel==("mpg")){return yScale(parseInt(d.mpg));}
+	else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
+	else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
+	else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
+}
+function updateBox(d,i){
+	if (selectedBox == null) {return null}
+	selectedTextBoxX = getX(selected,i);
+	 selectedTextBoxY = getY(selected,i);
+selectedBox.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY);
+
+	close.transition().duration(1000)
+	.attr("x", selectedTextBoxX+235)
+	.attr("y", selectedTextBoxY+15);
+
+
+	closeRect
+	.transition().duration(1000)
+	.attr("x", selectedTextBoxX+230)
+	.attr("y", selectedTextBoxY);
+
+	selectedName.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+15);
+
+	selectedYear.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+30);
+
+
+	selectedMPG
+	.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+45);
+	
+
+	selectedCylinders.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+60);
+
+
+	selectedHorsepower.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+75);
+
+
+	selectedAcceleration.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+90);
+	
+
+	selectedDisplacement.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+105);
+
+
+	selectedWeight.transition().duration(1000)
+	.attr("x", selectedTextBoxX)
+	.attr("y", selectedTextBoxY+120);
+
+}
 
 	function xDrop()
 	{
@@ -211,6 +294,7 @@ svg.selectAll("circle")
 .transition()
 .duration(1000)
 .attr("cx", function(d,i) {
+	updateBox(d,i);
 	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
 	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
 	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
@@ -224,6 +308,7 @@ xAxis = d3.svg.axis()
 .orient("bottom");
 actualXAxis.call(xAxis);
 xLabelText.text(xLabel);
+
 }
 function yDrop()
 {
@@ -244,7 +329,7 @@ function yDrop()
 	.transition()
 	.duration(1000)
 	.attr("cy", function(d,i) {
-
+		updateBox(d,i);
 		if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
 		else if (yLabel==("cylinder")){return yScale(parseInt(d.cylinders));}
 		else if (yLabel==("mpg")){return yScale(parseInt(d.mpg));}
@@ -255,6 +340,7 @@ function yDrop()
 	yAxis = d3.svg.axis()
 	.scale(yScale)
 	.orient("left");
+
 
    				 //Create Y axis
    				 actualYAxis.call(yAxis);
@@ -294,22 +380,7 @@ function yDrop()
 ///////////////////////////////////////////////////////////
 
 
-function getX(d,i) {
-	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
-	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
-	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
-	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
-	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
-	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
-}
-function getY(d,i) {
-	if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
-	else if (yLabel==("cylinder")){return yScale(parseInt(d.cylinders));}
-	else if (yLabel==("mpg")){return yScale(parseInt(d.mpg));}
-	else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
-	else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
-	else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
-}
+
 
 function killBox(d,i){	 
 	selectedBox.remove();
@@ -324,10 +395,12 @@ function killBox(d,i){
 	 close.remove();
 	 closeRect.remove();
 	}
+
 function popBox(d,i){
 if (selectedBox != null)	{killBox(d,i)}
-	var selectedTextBoxX = getX(d,i);
-	var selectedTextBoxY = getY(d,i);
+	selected = d;
+	 selectedTextBoxX = getX(d,i);
+	 selectedTextBoxY = getY(d,i);
 	 selectedBox = svg.append("rect")
 	.attr("x", selectedTextBoxX)
 	.attr("y", selectedTextBoxY)
