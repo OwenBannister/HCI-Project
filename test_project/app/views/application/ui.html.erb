@@ -36,6 +36,8 @@ div.inline { float:left; }
 	</div>
 
 	<div class="inline">
+		<button onclick="popHelp()">Help</button> 
+
 		<!-- Sliders  -->
 		<h2>Select ranges for the data</h2>
 		<p style="height:10px">
@@ -81,8 +83,7 @@ div.inline { float:left; }
 		</p>
 		<div id="accelerationslider-range" style="width:500px"></div>
 	
-		<!-- <button onclick="update()">Update Visualisation</button> -->
-
+		 
 	
 		<h2>Select attributes for axis</h2>
 		<form>
@@ -94,6 +95,7 @@ div.inline { float:left; }
 				<option>displacement</option>
 				<option>weight</option>
 				<option>acceleration</option>
+				<option>year</option>
 			</select>
 
 		</form>
@@ -107,6 +109,7 @@ div.inline { float:left; }
 				<option>displacement</option>
 				<option>weight</option>
 				<option>acceleration</option>
+				<option>year</option>
 			</select>
 
 		</form>
@@ -114,7 +117,10 @@ div.inline { float:left; }
 	
 	<script type="text/javascript">
 
-
+	function popHelp()
+{
+	alert("The size and colors of the circles in the graph relate to their MPG with green being high MPG and red being low\n\nUse the Sliders to change the cars displayed accoring to their ranges\n\nUse the dropdowns to change the axis of the graph\n\nUse the text at the bottom to select cars by name to display on the graph\n\nClick on a circle to see more information");
+}
 
 	var w = 1000;
 	var h = 800;
@@ -182,6 +188,7 @@ div.inline { float:left; }
 			else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
 			else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
 			else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+			else if (xLabel===("year")){return xScale(parseInt(d.model_year));}
 		})
 		.transition()		
 		.duration(1000)
@@ -205,6 +212,7 @@ div.inline { float:left; }
 	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
 	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
 	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+	else if (xLabel===("year")){return xScale(parseInt(d.model_year));}
 }
 function getY(d,i) {
 	if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
@@ -213,6 +221,7 @@ function getY(d,i) {
 	else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
 	else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
 	else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
+	else if (yLabel===("year")){return yScale(parseInt(d.model_year));}
 }
 function updateBox(d,i){
 	if (selectedBox == null) {return null}
@@ -286,6 +295,7 @@ xScale = d3.scale.linear()
 	else if (xLabel===("displacement")){return parseInt(d.displacement);}
 	else if (xLabel===("weight")){return parseInt(d.weight);}
 	else if (xLabel===("acceleration")){return parseInt(d.acceleration);}
+	else if (xLabel===("year")){return parseInt(d.model_year);}
 }))])
 .range([20, w]);
 
@@ -301,6 +311,7 @@ svg.selectAll("circle")
 	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
 	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
 	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
+	else if (xLabel===("year")){return xScale(parseInt(d.model_year));}
 })
 
 xAxis = d3.svg.axis()
@@ -322,6 +333,7 @@ function yDrop()
 		else if (yLabel==("displacement")){return parseInt(d.displacement);}
 		else if (yLabel==("weight")){return parseInt(d.weight);}
 		else if (yLabel==("acceleration")){return parseInt(d.acceleration);}
+		else if (yLabel===("year")){return parseInt(d.model_year);}
 
 	}))])
 	.range([h, 0]);
@@ -336,6 +348,7 @@ function yDrop()
 		else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
 		else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
 		else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
+		else if (yLabel===("year")){return yScale(parseInt(d.model_year));}
 	})
 	yAxis = d3.svg.axis()
 	.scale(yScale)
@@ -356,10 +369,10 @@ function yDrop()
 			});
 
    					svg = d3.select("#svg").append("svg")
+
    					var text_column_padding = 0;
    					svg.attr("width", w + 100)
-   					.attr("height", h+textArea);
-
+   					.attr("height", h+textArea)
    					xScale = d3.scale.pow().exponent(1.3)
    					.domain([0, 2+(d3.max(cars, function(d) { return parseInt(d.mpg); }))])
    					.range([20, w]);
@@ -744,7 +757,8 @@ bottomText = svg.append("text")
    				 actualYAxis = 	actualXAxix =  svg.append("g")
    				 .attr("class", "axis")
    				 .attr("transform", "translate(90 ,0)")
-   				 .call(yAxis);
+   				 .call(yAxis)
+   				 .call( function(){popHelp();});
 
 
 
