@@ -30,57 +30,44 @@ div.inline { float:left; }
 </style>
 </head>
 <body>
+	<div class="well" style="height:50px; background-color:lightblue; max-width:1682" >
+		<h2>Car Attribute Visualisation - Owen Bannister </h2>
 
-	<div class="inline" id="svg">
+	</div>
+	<div class="inline well" id="svg" >
 
 	</div>
 
-	<div class="inline">
-		<button onclick="popHelp()">Help</button> 
-
+	<div class="inline well" style="background-color:lightblue">
+		<button class="btn btn-primary"onclick="popHelp()">Help</button> 
 		<!-- Sliders  -->
 		<h2>Select ranges for the data</h2>
-		<p style="height:10px">
-			<label for="model_yearamount">Year range:</label>
-			<input type="text" id="model_yearamount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		Year Range:
+		<input type="text" id="model_yearamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="model_yearslider-range" style="width:500px"></div>
-
-		<p style="height:10px">
-			<label for="mpgamount">Mpg range:</label>
-			<input type="text" id="mpgamount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		<br />
+		Mpg range:
+		<input type="text" id="mpgamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="mpgslider-range" style="width:500px"></div>
-
-		<p style="height:10px">
-			<label for="cylinderamount">Cylinder range:</label>
-			<input type="text" id="cylinderamount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		<br />
+		Cylinder range:
+		<input type="text" id="cylinderamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="cylinderslider-range" style="width:500px"></div>
-
-		<p style="height:10px">
-			<label for="horsepoweramount">Horsepower range:</label>
-			<input type="text" id="horsepoweramount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		<br />
+		Horsepower range:
+		<input type="text" id="horsepoweramount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="horsepowerslider-range" style="width:500px"></div>
-
-		<p style="height:10px">
-			<label for="displacementamount">Displacement range:</label>
-			<input type="text" id="displacementamount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		<br />
+		Displacement range:
+		<input type="text" id="displacementamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="displacementslider-range" style="width:500px"></div>
-
-
-		<p style="height:10px">
-			<label for="weightamount">Weight range:</label>
-			<input type="text" id="weightamount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		<br />
+		Weight range:
+		<input type="text" id="weightamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="weightslider-range" style="width:500px"></div>
-
-		<p style="height:10px">
-			<label for="accelerationamount">Acceleration range:</label>
-			<input type="text" id="accelerationamount" style="border: 0; color: #f6931f; font-weight: bold;" />
-		</p>
+		<br />
+		Acceleration range:
+		<input type="text" id="accelerationamount" style="border: 0; color: #f6931f; font-weight: bold;" />
 		<div id="accelerationslider-range" style="width:500px"></div>
 	
 		 
@@ -123,8 +110,8 @@ div.inline { float:left; }
 }
 
 	var w = 1000;
-	var h = 800;
-	var textArea = 2000;
+	var h = 810;
+	var textArea = 1000;
 	var padding = 20;
 	var count = 0;
 	var counter = 0;
@@ -673,16 +660,16 @@ var circles = svg.selectAll("circle")
 })
 .saveColor()
 			//this.__data__
-			.on("mouseover", function(){
+.on("mouseover", function(){
 				//d3.select(this).style("fill", "red");
-			})
+		})
 			.on("mouseout", function(){
 	
 			})
-			.on("click", function(d, i){
-				popBox(d,i);
+.on("click", function(d, i){
+	popBox(d,i);
 
-			});
+});
 
 
 
