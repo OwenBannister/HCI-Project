@@ -30,10 +30,12 @@ div.inline { float:left; }
 </style>
 </head>
 <body>
-	<div class="well" style="height:50px; background-color:lightblue; max-width:1682" >
-		<h2>Car Attribute Visualisation - Owen Bannister </h2>
+	<div class="row">
+	<div class="well span12" style="height:50px; background-color:lightblue; max-width:1682" >
+		<h2 class="inline">Car Attribute Visualisation - Owen Bannister </h2>
 
 	</div>
+</div>
 	<div class="inline well" id="svg" >
 
 	</div>
@@ -111,7 +113,7 @@ div.inline { float:left; }
 
 	var w = 1000;
 	var h = 810;
-	var textArea = 1000;
+	var textArea = 1200;
 	var padding = 20;
 	var count = 0;
 	var counter = 0;
@@ -186,9 +188,10 @@ div.inline { float:left; }
 		d3.selectAll("circle").filter(function(d) {
 			return ((parseInt(d.cylinders) > parseInt(cylinder_max)) || (parseInt(d.cylinders) < parseInt(cylinder_min)))||((parseInt(d.horsepower) > parseInt(horsepower_max)) ||(parseInt(d.horsepower) < parseInt(horsepower_min)))||((parseInt(d.mpg) > parseInt(mpg_max)) ||(parseInt(d.mpg) < parseInt(mpg_min)))||((parseInt(d.displacement) > parseInt(displacement_max)) ||(parseInt(d.displacement) < parseInt(displacement_min)))||((parseInt(d.weight) > parseInt(weight_max)) ||(parseInt(d.weight) < parseInt(weight_min)))||((parseInt(d.acceleration) > parseInt(acceleration_max)) ||(parseInt(d.acceleration) < parseInt(acceleration_min)))||((parseInt(d.model_year) > parseInt(model_year_max)) ||(parseInt(d.model_year) < parseInt(model_year_min)));})
 		.transition()
+			.duration(1000)
 		.attr("opacity", 0)
 		.transition()
-		.duration(1000)
+	
 		.attr("cx", 3000);
 
 	}
@@ -219,52 +222,52 @@ selectedBox.transition().duration(1000)
 	.attr("y", selectedTextBoxY);
 
 	close.transition().duration(1000)
-	.attr("x", selectedTextBoxX+235)
+	.attr("x", selectedTextBoxX+245)
 	.attr("y", selectedTextBoxY+15);
 
 
 	closeRect
 	.transition().duration(1000)
-	.attr("x", selectedTextBoxX+230)
+	.attr("x", selectedTextBoxX+240)
 	.attr("y", selectedTextBoxY);
 
 	selectedName.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+15);
 
 	selectedYear.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+30);
 
 
 	selectedMPG
 	.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+45);
 	
 
 	selectedCylinders.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+60);
 
 
 	selectedHorsepower.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+75);
 
 
 	selectedAcceleration.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+90);
 	
 
 	selectedDisplacement.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+105);
 
 
 	selectedWeight.transition().duration(1000)
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+120);
 
 }
@@ -405,11 +408,11 @@ if (selectedBox != null)	{killBox(d,i)}
 	.attr("x", selectedTextBoxX)
 	.attr("y", selectedTextBoxY)
 	.attr("height", 140)
-	.attr("width", 250)
-	.style("fill", "white")
+	.attr("width", 260)
+	.style("fill", "lightblue")
 	.attr("stroke", "black")
 	.attr("stroke-width", function(d) {
-		return 1;
+		return 2;
 
 	})
 	.on("click", function(d, i){
@@ -417,11 +420,11 @@ if (selectedBox != null)	{killBox(d,i)}
 	});
 
 	closeRect = svg.append("rect")
-	.attr("x", selectedTextBoxX+230)
+	.attr("x", selectedTextBoxX+240)
 	.attr("y", selectedTextBoxY)
 	.attr("height", 20)
 	.attr("width", 20)
-	.style("fill", "white")
+	.style("fill", "red")
 	.attr("stroke", "black")
 	.attr("stroke-width", function(d) {
 		return 1;
@@ -431,49 +434,50 @@ if (selectedBox != null)	{killBox(d,i)}
 
 
 	close = svg.append("text")
-	.attr("x", selectedTextBoxX+235)
+	.attr("x", selectedTextBoxX+245)
 	.attr("y", selectedTextBoxY+15)
+		.style("fill", "white")
 	.text("X").on("click", function(d, i){
 		killBox(d,i);
 	});
 
 	selectedName = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+15)
 	.text("Name: "+d.car_name);
 
 	selectedYear = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+30)
 	.text("Year: "+d.model_year);
 
 	selectedMPG = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+45)
 	.text("MPG: "+d.mpg);
 
 	selectedCylinders = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+60)
 	.text("Horsepower: "+d.horsepower);
 
 	selectedHorsepower = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+75)
 	.text("Cylinders: "+d.cylinders);
 
 	selectedAcceleration = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+90)
 	.text("Acceleration (0-100kph): "+d.acceleration);
 
 	selectedDisplacement = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+105)
 	.text("Displacement (ml): "+d.displacement);
 
 	selectedWeight = svg.append("text")
-	.attr("x", selectedTextBoxX)
+	.attr("x", selectedTextBoxX+5)
 	.attr("y", selectedTextBoxY+120)
 	.text("Weight (kg): "+d.weight);}
 
@@ -651,6 +655,8 @@ var circles = svg.selectAll("circle")
 .attr("id", function(d, i) {
 	return d.car_name.replace(/ /g, "_")+d.displacement+d.model_year;
 })
+.attr("stroke", "black")
+.attr("stroke-width", "1")
 .attr("fill", function(d,i) {
 	var red = parseInt(255-d.mpg*6);
 	var green = parseInt(d.mpg*6);
@@ -676,6 +682,41 @@ var circles = svg.selectAll("circle")
 /////////////////////////////////////////////////////////////
 // Text
 /////////////////////////////////////////////////////////////
+svg.append("rect")
+.attr("x", 0)
+.attr("y", h+40)
+.attr("fill", "lightblue")
+.attr("width", w+100)
+.attr("height", textArea+100);
+
+svg.append("line")
+.style("stroke", "black")
+.attr("x1", 210)
+    .attr("y1", h+100)
+    .attr("x2", 210)
+    .attr("y2", h+40+textArea);
+
+svg.append("line")
+.style("stroke", "black")
+.attr("x1", 430)
+    .attr("y1", h+100)
+    .attr("x2", 430)
+    .attr("y2", h+40+textArea);
+
+svg.append("line")
+.style("stroke", "black")
+.attr("x1", 650)
+    .attr("y1", h+100)
+    .attr("x2", 650)
+    .attr("y2", h+40+textArea);
+
+svg.append("line")
+.style("stroke", "black")
+.attr("x1", 870)
+    .attr("y1", h+100)
+    .attr("x2", 870)
+    .attr("y2", h+40+textArea);
+
 
 var text = svg.selectAll("text")
 .data(cars)
@@ -685,11 +726,18 @@ var text = svg.selectAll("text")
 	return d3.descending(b.car_name,a.car_name);
 })
 .text(function(d) {
-	return '| '+d.car_name;
+	return d.car_name;
 })
 
 .attr("id", function(d, i) {
 	return d.car_name.replace(/ /g, "_")+d.displacement+d.model_year;
+})
+.attr("fill", function(d,i) {
+	var red = parseInt(255-d.mpg*6);
+	var green = parseInt(d.mpg*6);
+	var blue = 0;
+	if (d.mpg<20){red+=parseInt(d.mpg*2);green-=parseInt(d.mpg*2)}
+	return  "rgba(" + red + "," + green + "," + blue + "," +1.0 + ")"; 
 })
 .attr("x", function() {
 	if (counter >80){
@@ -710,7 +758,10 @@ var text = svg.selectAll("text")
 })
 .on("click", function(d, i){
 	popBox(d,i)
+
 })
+
+
 
 
 yLabelText = svg.append("text")
@@ -725,6 +776,7 @@ xLabelText = svg.append("text")
 bottomText = svg.append("text")
 .attr("x", 20)
 .attr("y", 880)
+.attr("font-size", "28")
 .text("Select Car From List");
 
 
