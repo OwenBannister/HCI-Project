@@ -196,13 +196,13 @@ div.inline { float:left; }
 
 	}
 	function getX(d,i) {
-	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
-	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
-	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
-	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
-	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
-	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
-	else if (xLabel===("year")){return xScale(parseInt(d.model_year));}
+	if (xLabel==("horsepower")){return xScale(parseInt(d.horsepower));}
+	else if (xLabel==("cylinder")){return xScale(parseInt(d.cylinders));}
+	else if (xLabel==("mpg")){return xScale(parseInt(d.mpg));}
+	else if (xLabel==("displacement")){return xScale(parseInt(d.displacement));}
+	else if (xLabel==("weight")){return xScale(parseInt(d.weight));}
+	else if (xLabel==("acceleration")){return xScale(parseInt(d.acceleration));}
+	else if (xLabel==("year")){return xScale(parseInt(d.model_year));}
 }
 function getY(d,i) {
 	if (yLabel==("horsepower")){return yScale(parseInt(d.horsepower));}
@@ -211,7 +211,7 @@ function getY(d,i) {
 	else if (yLabel==("displacement")){return yScale(parseInt(d.displacement));}
 	else if (yLabel==("weight")){return yScale(parseInt(d.weight));}
 	else if (yLabel==("acceleration")){return yScale(parseInt(d.acceleration));}
-	else if (yLabel===("year")){return yScale(parseInt(d.model_year));}
+	else if (yLabel==("year")){return yScale(parseInt(d.model_year));}
 }
 function updateBox(d,i){
 	if (selectedBox == null) {return null}
@@ -271,7 +271,19 @@ selectedBox.transition().duration(1000)
 	.attr("y", selectedTextBoxY+120);
 
 }
+function getYMin(){
+return parseInt((d3.min(cars, function(d) {
+		if (yLabel==("horsepower")){return parseInt(d.horsepower);}
+		else if (yLabel==("cylinder")){return parseInt(d.cylinders);}
+		else if (yLabel==("mpg")){return parseInt(d.mpg);}
+		else if (yLabel==("displacement")){return parseInt(d.displacement);}
+		else if (yLabel==("weight")){return parseInt(d.weight);}
+		else if (yLabel==("acceleration")){return parseInt(d.acceleration);}
+		else if (yLabel===("year")){return parseInt(d.model_year);}
 
+	}))*.9)
+
+}
 	function xDrop()
 	{
 		var xlist=document.getElementById("xList");
@@ -295,13 +307,13 @@ svg.selectAll("circle")
 .duration(1000)
 .attr("cx", function(d,i) {
 	updateBox(d,i);
-	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower));}
-	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders));}
-	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg));}
-	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement));}
-	else if (xLabel===("weight")){return xScale(parseInt(d.weight));}
-	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration));}
-	else if (xLabel===("year")){return xScale(parseInt(d.model_year));}
+	if (xLabel===("horsepower")){return xScale(parseInt(d.horsepower))+70;}
+	else if (xLabel===("cylinder")){return xScale(parseInt(d.cylinders))+70;}
+	else if (xLabel===("mpg")){return xScale(parseInt(d.mpg))+70;}
+	else if (xLabel===("displacement")){return xScale(parseInt(d.displacement))+70;}
+	else if (xLabel===("weight")){return xScale(parseInt(d.weight))+70;}
+	else if (xLabel===("acceleration")){return xScale(parseInt(d.acceleration))+70;}
+	else if (xLabel===("year")){return xScale(parseInt(d.model_year))+70;}
 })
 
 xAxis = d3.svg.axis()
@@ -311,12 +323,15 @@ actualXAxis.call(xAxis);
 xLabelText.text(xLabel);
 
 }
+
+
+
 function yDrop()
 {
 	var ylist=document.getElementById("yList");
 	yLabel = ylist.options[ylist.selectedIndex].text;
 	yScale = d3.scale.linear()
-	.domain([0, 1+(d3.max(cars, function(d) {
+	.domain([getYMin(), 1+(d3.max(cars, function(d) {
 		if (yLabel==("horsepower")){return parseInt(d.horsepower);}
 		else if (yLabel==("cylinder")){return parseInt(d.cylinders);}
 		else if (yLabel==("mpg")){return parseInt(d.mpg);}
@@ -363,11 +378,11 @@ function yDrop()
    					var text_column_padding = 0;
    					svg.attr("width", w + 100)
    					.attr("height", h+textArea)
-   					xScale = d3.scale.pow().exponent(1.3)
-   					.domain([0, 2+(d3.max(cars, function(d) { return parseInt(d.mpg); }))])
+   					xScale = d3.scale.linear()
+   					.domain([0, 1+(d3.max(cars, function(d) { return parseFloat(d.mpg); }))])
    					.range([20, w]);
    					yScale = d3.scale.linear()
-   					.domain([0, 2+(d3.max(cars, function(d) { return parseInt(d.mpg); }))])
+   					.domain([0, 1+(d3.max(cars, function(d) { return parseFloat(d.mpg); }))])
    					.range([h, 0]);
 
    					xAxis = d3.svg.axis()
@@ -643,7 +658,7 @@ var circles = svg.selectAll("circle")
 .enter()
 .append("circle")
 .attr("cx", function(d,i) {
-	return getX(d,i);
+	return getX(d,i)+70;
 })
 .attr("cy", function(d,i) {
 	return getY(d,i)
@@ -793,7 +808,7 @@ bottomText = svg.append("text")
  		.call(xAxis);
 
    				 //Create Y axis
-   				 actualYAxis = 	actualXAxix =  svg.append("g")
+   				 actualYAxis  =  svg.append("g")
    				 .attr("class", "axis")
    				 .attr("transform", "translate(90 ,0)")
    				 .call(yAxis)
