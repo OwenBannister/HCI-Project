@@ -432,7 +432,7 @@ if (selectedBox != null)	{killBox(d,i)}
 	})
 	.on("click", function(d, i){
 		killBox(d,i);
-	});
+	}).style("cursor", "pointer");
 
 	closeRect = svg.append("rect")
 	.attr("x", selectedTextBoxX+240)
@@ -445,7 +445,7 @@ if (selectedBox != null)	{killBox(d,i)}
 		return 1;
 	}).on("click", function(d, i){
 		killBox(d,i);
-	});
+	}).style("cursor", "pointer");
 
 
 	close = svg.append("text")
@@ -454,7 +454,7 @@ if (selectedBox != null)	{killBox(d,i)}
 		.style("fill", "white")
 	.text("X").on("click", function(d, i){
 		killBox(d,i);
-	});
+	}).style("cursor", "pointer");
 
 	selectedName = svg.append("text")
 	.attr("x", selectedTextBoxX+5)
@@ -657,6 +657,7 @@ var circles = svg.selectAll("circle")
 .data(cars)
 .enter()
 .append("circle")
+.style("cursor", "pointer")
 .attr("cx", function(d,i) {
 	return getX(d,i)+70;
 })
@@ -704,6 +705,7 @@ svg.append("rect")
 .attr("width", w+100)
 .attr("height", textArea+100);
 
+
 svg.append("line")
 .style("stroke", "black")
 .attr("x1", 210)
@@ -737,6 +739,7 @@ var text = svg.selectAll("text")
 .data(cars)
 .enter()
 .append("text")
+.style("cursor", "pointer")
 .sort(function(a,b){
 	return d3.descending(b.car_name,a.car_name);
 })
